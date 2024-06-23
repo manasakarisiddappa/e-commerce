@@ -1,6 +1,8 @@
 const HtmlWebPackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const Dotenv = require("dotenv-webpack");
+const { InjectManifest } = require("workbox-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
   context: __dirname,
@@ -38,5 +40,26 @@ module.exports = {
       path: "./.env", // Path to .env file (this is the default)
       systemvars: true,
     }),
+    new CopyPlugin({
+      patterns: [
+        { from: "./src/favicon.ico", to: "" },
+        { from: "./src/manifest.json", to: "" },
+        { from: "./src/logo192.png", to: "" },
+        { from: "./src/logo512.png", to: "" },
+      ],
+    }),
+    new InjectManifest({
+      swSrc: "./src/src-sw.js",
+      swDest: "sw.js",
+    }),
   ],
 };
+
+// if ("production" === process.env.NODE_ENV) {
+//   webpackPlugins.push(
+//     new InjectManifest({
+//       swSrc: "./src/src-sw.js",
+//       swDest: "sw.js",
+//     })
+//   );
+// }
